@@ -1,6 +1,6 @@
 use std::ops;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub struct Vector3 {
     x: f64,
     y: f64,
@@ -32,20 +32,60 @@ impl Vector3 {
     pub fn calculate_length(&self) -> f64 {
         self.dot_product(&self).sqrt()
     }
+
+    pub fn as_normalized(&self) -> Vector3 {
+        let length = self.calculate_length();
+        if length == 0.0 {return Vector3::new()}
+        Vector3::new_from_values(self.x / length, self.y / length, self.z / length)
+    }
+
+    pub fn project_onto(&self, other: &Vector3) -> Vector3 {
+        let other_normalized = other.as_normalized();
+        let dot = other_normalized.dot_product(&self);
+        other_normalized * dot
+    }
+
+    pub fn distance_to(&self, other: &Vector3) -> f64 {
+        (self - other).calculate_length()
+    }
 }
 
 impl ops::Mul<f64> for Vector3 {
     type Output = Self;
 
-    fn mul(self, factor: f64) -> Self {
-        Vector3::new_from_values(self.x * factor, self.y * factor, self.z * factor)
+    fn mul(self, rhs: f64) -> Self {
+        Vector3::new_from_values(self.x * rhs, self.y * rhs, self.z * rhs)
     }
 }
 
-impl ops::Add<Vector3> for Vector3 {
-    type Output = Self;
+impl ops::Mul<f64> for &Vector3 {
+    type Output = Vector3;
 
-    fn add(self, rhs: Vector3) -> Self {
+    fn mul(self, rhs: f64) -> Vector3 {
+        Vector3::new_from_values(self.x * rhs, self.y * rhs, self.z * rhs)
+    }
+}
+
+impl ops::Add<&Vector3> for &Vector3 {
+    type Output = Vector3;
+
+    fn add(self, rhs: &Vector3) -> Vector3 {
         Vector3::new_from_values(self.x + rhs.x, self.y + rhs.y, self.z + rhs.z)
+    }
+}
+
+impl ops::Sub<&Vector3> for &Vector3 {
+    type Output = Vector3;
+
+    fn sub(self, rhs: &Vector3) -> Vector3 {
+        Vector3::new_from_values(self.x - rhs.x, self.y - rhs.y, self.z - rhs.z)
+    }
+}
+
+impl ops::Neg for &Vector3 {
+    type Output = Vector3;
+
+    fn neg(self) -> Vector3 {
+        Vector3::new_from_values(-self.x, -self.y, -self.z)
     }
 }
