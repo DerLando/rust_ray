@@ -52,9 +52,14 @@ mod ray_tests {
         let v_test = Vector3::new_from_values(5.0, 5.0, 0.0);
 
         // Act
-        let dist = ray.distance_to(&v_test);
+        let dist_1 = ray.distance_to(&v_test);
+        let expected_1 = 5.0;
+        let dist_2 = ray.distance_to(&(v_test * -1.0));
+        let expected_2 = (5.0 * 5.0 + 5.0 * 5.0_f64).sqrt();
 
         // Assert
-        assert!((dist - 5.0).abs() < 0.1);
+        assert!((dist_1 - expected_1).abs() < 0.1);
+        assert_eq!(dist_2, expected_2);
     }
+
 }
