@@ -45,7 +45,7 @@ mod ray_tests {
 
     #[test]
     fn test_ray_distance_to() {
-        //Arrange
+        // Arrange
         let v_origin = Vector3::new();
         let v_direction = Vector3::new_from_values(1.0, 0.0, 0.0);
         let ray = Ray::new_from_vectors(&v_origin, &v_direction);
@@ -62,4 +62,53 @@ mod ray_tests {
         assert_eq!(dist_2, expected_2);
     }
 
+    #[test]
+    fn test_ray_project_point() {
+        // Arrange
+        let v_origin = Vector3::new();
+        let v_direction = Vector3::new_from_values(1.0, 0.0, 0.0);
+        let ray = Ray::new_from_vectors(&v_origin, &v_direction);
+        let v_test = Vector3::new_from_values(5.0, 5.0, 0.0);
+
+        // Act
+        let v_projected_1 = ray.project_vec_onto_self(&v_test);
+        let expected_1 = Vector3::new_from_values(5.0, 0.0, 0.0);
+        let v_projected_2 = ray.project_vec_onto_self(&-&v_test);
+        let expected_2 = Vector3::new();
+
+        // Assert
+        assert_eq!(v_projected_1, expected_1);
+        assert_eq!(v_projected_2, expected_2);
+    }
+
+}
+
+#[cfg(test)]
+mod sphere_tests {
+
+    use super::super::geometry::{Vector3, Ray, Sphere};
+    use super::super::traits::{RayIntersectionResult, RayCast};
+    
+    #[test]
+    fn test_sphere_ray_intersection() {
+        // Arrange
+        let sphere_far = Sphere::new_from_values(&Vector3::new_from_values(10.0, 10.0, 10.0), 1.0);
+        let sphere_intersecting = Sphere::new_from_values(&Vector3::new_from_values(5.0, 5.0, 1.0), 5.0);
+        let ray = Ray::new_from_vectors(&Vector3::new_from_values(1.0, 1.0, 1.0), &Vector3::new_from_values(1.0, 0.0, 0.0));
+
+        // Act
+        let far_int = sphere_far.intersect_ray(&ray);
+        let intersecting_int = sphere_intersecting.intersect_ray(&ray);
+
+        // Assert
+        match far_int {
+            RayIntersectionResult::Some(_) => assert!(false),
+            RayIntersectionResult::None => assert!(true)
+        }
+        match intersecting_int {
+            RayIntersectionResult::None => assert!(false),
+            RayIntersectionResult::Some(v) => assert_eq!(v, Vector3::new_from_values(2.0, 1.0, 1.0))
+        }
+
+    }
 }

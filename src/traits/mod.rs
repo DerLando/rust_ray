@@ -1,4 +1,4 @@
-use super::geometry::{Vector3};
+use super::geometry::{Vector3, Ray};
 
 pub enum RayIntersectionResult {
     None,
@@ -6,5 +6,5 @@ pub enum RayIntersectionResult {
 }
 
 pub trait RayCast {
-    fn intersect_ray(&self) -> RayIntersectionResult;
+    fn intersect_ray(&self, ray: &Ray) -> RayIntersectionResult;
 }

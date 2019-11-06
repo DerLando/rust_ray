@@ -1,10 +1,10 @@
 use std::ops;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vector3 {
-    x: f64,
-    y: f64,
-    z: f64
+    pub x: f64,
+    pub y: f64,
+    pub z: f64
 }
 
 impl Vector3 {
@@ -42,6 +42,7 @@ impl Vector3 {
     pub fn project_onto(&self, other: &Vector3) -> Vector3 {
         let other_normalized = other.as_normalized();
         let dot = other_normalized.dot_product(&self);
+        println!("dot is {:?}", dot);
         other_normalized * dot
     }
 
