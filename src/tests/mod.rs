@@ -150,3 +150,30 @@ mod transformation_tests {
         assert_eq!(v_scale, Vector3::new_from_values(2.0, 10.0, 6.5));
     }
 }
+
+#[cfg(test)]
+mod render_tests {
+
+    use super::super::scene::{Document, Renderer};
+    use image::GenericImageView;
+
+    #[test]
+    fn test_can_render_document() {
+        // Arrange
+        let document = Document::default_test();
+        let renderer = Renderer::new_from_values(100, 75, 90.0);
+
+        // Act
+        let img = renderer.render(&document, &document.camera_table.cameras[0]);
+
+        // Assert
+        assert_eq!(renderer.width, img.width());
+        assert_eq!(renderer.height, img.height());
+
+        // save image as test
+        match img.save("test.png") {
+            Result::Err(_) => panic!("Failed to save image"),
+            Result::Ok(_) => assert!(true)
+        }
+    }
+}

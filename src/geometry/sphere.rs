@@ -1,25 +1,29 @@
 use super::super::geometry::{Vector3, Ray};
 use super::super::traits::{RayCast, RayIntersectionResult};
+use super::super::scene::{Color};
 use std::cmp::Ordering;
 
 #[derive(Debug)]
 pub struct Sphere {
     pub origin: Vector3,
-    pub radius: f64
+    pub radius: f64,
+    pub color: Color
 }
 
 impl Sphere {
     pub fn new() -> Sphere {
         Sphere {
             origin: Vector3::new(),
-            radius: 0.0
+            radius: 0.0,
+            color: Color::red()
         }
     }
 
     pub fn new_from_values(origin: &Vector3, radius: f64) -> Sphere {
         Sphere {
             origin: *origin,
-            radius: radius
+            radius: radius,
+            color: Color::red()
         }
     }
 }

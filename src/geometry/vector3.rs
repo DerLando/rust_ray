@@ -10,7 +10,7 @@ pub struct Vector3 {
 
 impl Vector3 {
 
-    pub fn new() -> Vector3 {
+    pub const fn new() -> Vector3 {
         Vector3{
             x: 0.0,
             y: 0.0,
@@ -18,7 +18,7 @@ impl Vector3 {
         }
     }
 
-    pub fn new_from_values(x: f64, y: f64, z: f64) -> Vector3 {
+    pub const fn new_from_values(x: f64, y: f64, z: f64) -> Vector3 {
         Vector3{
             x: x,
             y: y,
