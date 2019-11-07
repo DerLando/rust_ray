@@ -49,6 +49,9 @@ impl Document {
         let mut object_table = ObjectTable::new();
         object_table.push_object(Box::new(sphere));
 
+        // let sphere1 = Sphere::new_from_values(&Vector3::new_from_values(0.0, 0.0, 0.0), 1.0);
+        // object_table.push_object(Box::new(sphere1));
+
         let camera = Camera::default();
         let mut camera_table = CameraTable::new();
         camera_table.push_camera(camera);

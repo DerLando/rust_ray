@@ -1,4 +1,5 @@
 use std::ops;
+use super::super::geometry::{Vector3};
 
 pub trait Transformable {
     fn transform(&self, transform: &Transformation) -> Self;
@@ -42,6 +43,14 @@ impl Transformation {
     pub fn scale(scale_factor: f64) -> Transformation {
         println!("Scale: {:?}", &Transformation::identity() * scale_factor);
         &Transformation::identity() * &MatrixColumn::scale(scale_factor)
+    }
+
+    pub fn translation(vector: &Vector3) -> Transformation {
+        let mut translation = Transformation::identity();
+        translation.matrix[3][0] = vector.x;
+        translation.matrix[3][1] = vector.y;
+        translation.matrix[3][2] = vector.z;
+        translation
     }
 
     pub const fn identity() -> Transformation {

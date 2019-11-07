@@ -140,31 +140,37 @@ mod transformation_tests {
         let v_test = Vector3::new_from_values(1.0, 5.0, 3.25);
         let trans_ident = Transformation::identity();
         let trans_scale = Transformation::scale(2.0);
+        let trans_translate = Transformation::translation(&Vector3::new_from_values(1.0, 1.0, 0.0));
 
         // Act
         let v_ident = v_test.transform(&trans_ident);
         let v_scale = v_test.transform(&trans_scale);
+        let v_translate = v_test.transform(&trans_translate);
 
         // Assert
         assert_eq!(v_ident, v_test);
         assert_eq!(v_scale, Vector3::new_from_values(2.0, 10.0, 6.5));
+        assert_eq!(v_translate, Vector3::new_from_values(2.0, 6.0, 3.25))
     }
 }
 
 #[cfg(test)]
 mod render_tests {
 
-    use super::super::scene::{Document, Renderer};
+    use super::super::scene::{Document, Renderer, Transformation, Transformable};
+    use super::super::geometry::{Vector3};
     use image::GenericImageView;
 
     #[test]
     fn test_can_render_document() {
         // Arrange
         let document = Document::default_test();
-        let renderer = Renderer::new_from_values(100, 75, 90.0);
+        let renderer = Renderer::new_from_values(800, 600, 90.0);
 
         // Act
-        let img = renderer.render(&document, &document.camera_table.cameras[0]);
+        let camera = &document.camera_table.cameras[0];
+        let camera = camera.transform(&Transformation::translation(&Vector3::new_from_values(0.5, 0.0, 0.0)));
+        let img = renderer.render(&document, &camera);
 
         // Assert
         assert_eq!(renderer.width, img.width());

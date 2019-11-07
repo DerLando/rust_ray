@@ -33,7 +33,7 @@ impl Renderer {
         // Lets do this real slow
         let mut image = DynamicImage::new_rgb8(self.width, self.height);
         let black = image::Rgba([0, 0, 0, 0]);
-        let red = image::Rgba([0, 1, 1, 1]);
+        let red = image::Rgba([0, 254, 0, 0]);
 
         let pixel_scale = self.pixel_scale();
         let aspect_ratio = self.aspect_ratio();
