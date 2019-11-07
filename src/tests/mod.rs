@@ -112,3 +112,41 @@ mod sphere_tests {
 
     }
 }
+
+#[cfg(test)]
+mod transformation_tests {
+    
+    use super::super::scene::{Transformation, Transformable};
+    use super::super::geometry::{Vector3};
+
+    #[test]
+    fn test_identity_multiplication() {
+        // Arrange
+        let trans_ident = Transformation::identity();
+        let trans_scale = Transformation::scale(2.0);
+
+        // Act
+        let trans_ident_squared = &trans_ident * &trans_ident;
+        let trans_ident_scaled = &trans_ident * &trans_scale;
+
+        // Assert
+        assert_eq!(trans_ident_squared, trans_ident);
+        assert_eq!(trans_ident_scaled, trans_scale);
+    }
+
+    #[test]
+    fn test_vector_transforms() {
+        // Arrange
+        let v_test = Vector3::new_from_values(1.0, 5.0, 3.25);
+        let trans_ident = Transformation::identity();
+        let trans_scale = Transformation::scale(2.0);
+
+        // Act
+        let v_ident = v_test.transform(&trans_ident);
+        let v_scale = v_test.transform(&trans_scale);
+
+        // Assert
+        assert_eq!(v_ident, v_test);
+        assert_eq!(v_scale, Vector3::new_from_values(2.0, 10.0, 6.5));
+    }
+}

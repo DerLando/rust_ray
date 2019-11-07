@@ -1,4 +1,5 @@
 use std::ops;
+use super::super::scene::{Camera, Transformation, Transformable};
 
 #[derive(Debug, Copy, Clone, PartialEq)]
 pub struct Vector3 {
@@ -48,6 +49,31 @@ impl Vector3 {
 
     pub fn distance_to(&self, other: &Vector3) -> f64 {
         (self - other).calculate_length()
+    }
+}
+
+impl Transformable for Vector3 {
+    fn transform(&self, transform: &Transformation) -> Self {
+        // transformation logic implemented in mul operator overload
+        self * transform
+    }
+}
+
+impl ops::Mul<&Transformation> for &Vector3 {
+    type Output = Vector3;
+
+    fn mul(self, rhs: &Transformation) -> Vector3 {
+        let x = self.x * rhs.matrix[0][0] + self.y * rhs.matrix[1][0] + self.z * rhs.matrix[2][0] + rhs.matrix[3][0];
+        let y = self.x * rhs.matrix[0][1] + self.y * rhs.matrix[1][1] + self.z * rhs.matrix[2][1] + rhs.matrix[3][1];
+        let z = self.x * rhs.matrix[0][2] + self.y * rhs.matrix[1][2] + self.z * rhs.matrix[2][2] + rhs.matrix[3][2];
+        let w = self.x * rhs.matrix[0][3] + self.y * rhs.matrix[1][3] + self.z * rhs.matrix[2][3] + rhs.matrix[3][3];
+        println!("vec transform: x: {}, y: {}, z: {}, w: {}", x, y, z, w);
+        if w != 1.0 && w != 0.0 {
+            Vector3::new_from_values(x / w, y / w, z / w)
+        }
+        else {
+            Vector3::new_from_values(x, y, z)
+        }
     }
 }
 
