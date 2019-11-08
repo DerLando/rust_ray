@@ -60,6 +60,20 @@ impl LightTable {
     pub fn push_light(&mut self, light: Light) {
         self.lights.push(light)
     }
+
+    pub fn get_intensity(&self, index: usize) -> f64 {
+        match &self.lights[index] {
+            Light::Directional(l) => l.intensity,
+            Light::Point(l) => l.intensity
+        }
+    }
+
+    pub fn get_color(&self, index: usize) -> &Color {
+        match &self.lights[index] {
+            Light::Directional(l) => &l.color,
+            Light::Point(l) => &l.color,
+        }
+    }
 }
 
 pub struct Document {
@@ -75,16 +89,16 @@ impl Document {
         object_table.push_object(SceneObject::new_from_object(Box::new(sphere)));
 
         let sphere1 = Sphere::new_from_values(&Vector3::new_from_values(-0.5, 2.5, 1.0), 0.2);
-        let material = Material{color: Color::red()};
+        let material = Material{color: Color::red(), albedo: 20.0};
         object_table.push_object(SceneObject::new_with_material(Box::new(sphere1), material));
 
         let sphere2 = Sphere::new_from_values(&Vector3::new_from_values(0.0, 3.75, 0.8), 0.7);
-        let material = Material{color: Color::blue()};
+        let material = Material{color: Color::blue(), albedo: 40.0};
         object_table.push_object(SceneObject::new_with_material(Box::new(sphere2), material));
 
         let mut plane = Plane::world_xy();
-        plane.origin = Vector3::new_from_values(0.0, 0.0, 0.0);
-        let plane_material = Material{color: Color::green()};
+        plane.origin = Vector3::new_from_values(0.0, 0.0, 0.1);
+        let plane_material = Material{color: Color::green(), albedo: 80.0};
         object_table.push_object(SceneObject::new_with_material(Box::new(plane), plane_material));
 
         let camera = Camera::new_from_position_and_target(&Vector3::new_from_values(0.0, 0.0, 0.6), &Vector3::new_from_values(0.0, 0.6, 0.3));

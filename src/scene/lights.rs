@@ -17,11 +17,12 @@ impl DirectionalLight {
         DirectionalLight {
             direction: Vector3::z_axis() * -1.0,
             color: Color{red: 0.9, green: 0.9, blue: 0.9},
-            intensity: 0.9
+            intensity: 1.0
         }
     }
 }
 
 pub struct PointLight {
-
+    pub color: Color,
+    pub intensity: f64
 }

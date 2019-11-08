@@ -1,5 +1,5 @@
 use super::{Vector3, Ray};
-use super::super::traits::{RayCast, RayIntersectionResult};
+use super::super::traits::{RayCast, RayIntersectionResult, RayIntersection};
 use std::cmp::Ordering;
 
 #[derive(Debug)]
@@ -33,7 +33,7 @@ impl RayCast for Plane {
 
         match t.partial_cmp(&0.0_f64).expect("No NAN please :/") {
             Ordering::Less => RayIntersectionResult::None, // intersection point lies behind ray origin
-            _ => RayIntersectionResult::Some(ray.vec_at_length(t))
+            _ => RayIntersectionResult::Some(RayIntersection::new_from_point_and_normal(&ray.vec_at_length(t), &normal))
         }
     }
 }

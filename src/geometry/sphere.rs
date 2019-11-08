@@ -1,5 +1,5 @@
 use super::super::geometry::{Vector3, Ray};
-use super::super::traits::{RayCast, RayIntersectionResult};
+use super::super::traits::{RayCast, RayIntersectionResult, RayIntersection};
 use super::super::scene::{Color};
 use std::cmp::Ordering;
 
@@ -26,6 +26,10 @@ impl Sphere {
             color: Color::red()
         }
     }
+
+    pub fn normal_at(&self, vector: &Vector3) -> Vector3 {
+        (vector - &self.origin).as_normalized()
+    }
 }
 
 impl RayCast for Sphere {
@@ -37,11 +41,16 @@ impl RayCast for Sphere {
 
         match distance_to_ray.partial_cmp(&self.radius).expect("No NAN please :/") {
             Ordering::Greater => RayIntersectionResult::None,
-            Ordering::Equal => RayIntersectionResult::Some(origin_projected),
+            Ordering::Equal =>{
+                let ray_int = RayIntersection::new_from_point_and_normal(&origin_projected, &self.normal_at(&origin_projected));
+                RayIntersectionResult::Some(ray_int)
+            },
             Ordering::Less => {
                 let len_ray_origin_to_intersection = origin_projected.distance_to(&ray.origin) - (self.radius * self.radius - distance_to_ray * distance_to_ray).sqrt();
                 println!("len_ray_to_int is: {}", len_ray_origin_to_intersection);
-                RayIntersectionResult::Some(ray.vec_at_length(len_ray_origin_to_intersection))
+                let int = ray.vec_at_length(len_ray_origin_to_intersection);
+                let ray_int = RayIntersection::new_from_point_and_normal(&int, &self.normal_at(&int));
+                RayIntersectionResult::Some(ray_int)
             }
         }
     }

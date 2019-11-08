@@ -1,6 +1,6 @@
-use super::super::scene::{Camera, Document};
+use super::super::scene::{Camera, Document, SceneObject, Color};
 use super::super::geometry::{Ray, Vector3};
-use super::super::traits::{RayCast, RayIntersectionResult};
+use super::super::traits::{RayCast, RayIntersectionResult, RayIntersection};
 use image::{DynamicImage, Rgba, GenericImage};
 
 #[derive(Debug)]
@@ -32,12 +32,15 @@ impl Renderer {
 
         // Lets do this real slow
         let mut image = DynamicImage::new_rgb8(self.width, self.height);
-        let black = image::Rgba([0, 0, 0, 0]);
-        let red = image::Rgba([0, 254, 0, 0]);
+        let black = image::Rgba([135, 206, 250, 0]);
 
         let pixel_scale = self.pixel_scale();
         let aspect_ratio = self.aspect_ratio();
         let camera_origin = camera.get_origin();
+
+        let direction_to_light = Vector3::new_from_values(-0.1, 0.0, -1.0);
+
+        let mut closest_scene_object: &SceneObject = &SceneObject::new();
 
         for x in 0..self.width {
             for y in 0..self.height {
@@ -55,23 +58,38 @@ impl Renderer {
                 let ray = Ray::new_from_vectors(&camera_origin, &direction);
 
                 // iterate over all document objects and intersect
-                image.put_pixel(x, y, black);
                 let mut distance_to_camera = 1000000.0_f64;
+                let mut object_found = false;
+                let mut color = Color::black();
                 for object_reference in document.object_table.objects.iter() {
                     match object_reference.object.intersect_ray(&ray) {
                         RayIntersectionResult::None => (),
-                        RayIntersectionResult::Some(v_int) => {
+                        RayIntersectionResult::Some(int) => {
                             // test if closest to camera
-                            let distance = v_int.distance_to_squared(&camera_origin);
+                            let distance = int.point.distance_to_squared(&camera_origin);
                             if distance < distance_to_camera {
                                 distance_to_camera = distance;
-                                let color = &object_reference.material.color;
-                                let color_rgba = image::Rgba([(color.red * 255.0) as u8, (color.green * 255.0) as u8, (color.blue * 255.0) as u8, 0]);
-                                image.put_pixel(x, y, color_rgba)
+                                closest_scene_object = object_reference;
+                                object_found = true;
+
+                                let intensity = document.light_table.get_intensity(0);
+                                let light_power = (int.normal.dot_product(&(direction_to_light * -1.0))).max(0.0) * intensity;
+                                let light_reflected = closest_scene_object.material.albedo / std::f64::consts::PI;
+                                color = &(&(&closest_scene_object.material.color * document.light_table.get_color(0)) * light_power) * light_reflected;
+                                color = color.clamp();
                             }
                         }
                     }
                 }
+
+                if object_found {
+                    let color_rgba = image::Rgba([(color.red * 255.0) as u8, (color.green * 255.0) as u8, (color.blue * 255.0) as u8, 0]);
+                    image.put_pixel(x, y, color_rgba)
+                }
+                else {
+                    image.put_pixel(x, y, black);
+                }
+
             }
         }
 

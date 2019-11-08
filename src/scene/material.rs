@@ -3,6 +3,7 @@ use super::Color;
 #[derive(Debug)]
 pub struct Material {
     pub color: Color,
+    pub albedo: f64,
 }
 
 impl Material {
@@ -12,7 +13,8 @@ impl Material {
                 red: 0.2,
                 green: 0.2,
                 blue: 0.2
-            }
+            },
+            albedo: 50.0
         }
     }
 }

@@ -102,10 +102,22 @@ mod plane_tests {
         // Assert
         match int {
             RayIntersectionResult::None => panic!("No intersection found!"),
-            RayIntersectionResult::Some(v_int) => {
-                assert_eq!(v_int, Vector3::new_from_values(0.0, 0.0, -5.0))
+            RayIntersectionResult::Some(int) => {
+                assert_eq!(int.point, Vector3::new_from_values(0.0, 0.0, -5.0))
             }
         }
+    }
+
+    #[test]
+    fn test_plane_normal() {
+        // Arrange
+        let plane = Plane::world_xy();
+
+        // Act
+        let normal = plane.normal();
+
+        // Assert
+        assert_eq!(normal, Vector3::new_from_values(0.0, 0.0, 1.0))
     }
 }
 
@@ -133,7 +145,7 @@ mod sphere_tests {
         }
         match intersecting_int {
             RayIntersectionResult::None => assert!(false),
-            RayIntersectionResult::Some(v) => assert_eq!(v, Vector3::new_from_values(2.0, 1.0, 1.0))
+            RayIntersectionResult::Some(int) => assert_eq!(int.point, Vector3::new_from_values(2.0, 1.0, 1.0))
         }
 
     }

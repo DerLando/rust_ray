@@ -20,3 +20,6 @@ mod material;
 
 pub use self::scene_object::SceneObject;
 mod scene_object;
+
+pub use self::lights::{Light, DirectionalLight, PointLight};
+mod lights;
