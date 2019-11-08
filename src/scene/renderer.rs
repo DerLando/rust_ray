@@ -38,7 +38,8 @@ impl Renderer {
         let aspect_ratio = self.aspect_ratio();
         let camera_origin = camera.get_origin();
 
-        let direction_to_light = Vector3::new_from_values(-0.1, 0.0, -1.0);
+        // negative of directional light direction
+        let direction_to_light = Vector3::new_from_values(0.0, 0.0, 1.0);
 
         let mut closest_scene_object: &SceneObject = &SceneObject::new();
 
@@ -71,9 +72,19 @@ impl Renderer {
                                 distance_to_camera = distance;
                                 closest_scene_object = object_reference;
                                 object_found = true;
+                                
+                                // test if in light
+                                let mut in_light = true;
+                                let shadow_ray = Ray::new_from_vectors(&(&int.point + &(&int.normal * 0.000001)), &direction_to_light);
+                                for obj in document.object_table.objects.iter() {
+                                    match obj.object.intersect_ray(&shadow_ray) {
+                                        RayIntersectionResult::None => (),
+                                        RayIntersectionResult::Some(_) => in_light = false,
+                                    }
+                                }
 
-                                let intensity = document.light_table.get_intensity(0);
-                                let light_power = (int.normal.dot_product(&(direction_to_light * -1.0))).max(0.0) * intensity;
+                                let intensity = if in_light {document.light_table.get_intensity(0)} else {0.0};
+                                let light_power = (int.normal.dot_product(&direction_to_light)).max(0.0) * intensity;
                                 let light_reflected = closest_scene_object.material.albedo / std::f64::consts::PI;
                                 color = &(&(&closest_scene_object.material.color * document.light_table.get_color(0)) * light_power) * light_reflected;
                                 color = color.clamp();
