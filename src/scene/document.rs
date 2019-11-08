@@ -1,10 +1,10 @@
-use super::super::scene::{Camera, Transformable};
+use super::super::scene::{Camera, Transformable, SceneObject, Material, Color};
 use super::super::geometry::{Sphere, Vector3};
 use super::super::traits::{RayCast};
 use std::boxed::Box;
 
 pub struct ObjectTable {
-    pub objects: Vec<Box<dyn RayCast>>
+    pub objects: Vec<SceneObject>
 }
 
 // TODO: Think about wrapping document-objects in an enum, for more type-safety
@@ -16,7 +16,7 @@ impl ObjectTable {
         }
     }
 
-    pub fn push_object(&mut self, object: Box<RayCast>) {
+    pub fn push_object(&mut self, object: SceneObject) {
         self.objects.push(object)
     }
 }
@@ -47,10 +47,11 @@ impl Document {
     pub fn default_test() -> Document {
         let sphere = Sphere::new_from_values(&Vector3::new_from_values(0.0, 0.0, -5.0), 1.0);
         let mut object_table = ObjectTable::new();
-        object_table.push_object(Box::new(sphere));
+        object_table.push_object(SceneObject::new_from_object(Box::new(sphere)));
 
-        // let sphere1 = Sphere::new_from_values(&Vector3::new_from_values(0.0, 0.0, 0.0), 1.0);
-        // object_table.push_object(Box::new(sphere1));
+        let sphere1 = Sphere::new_from_values(&Vector3::new_from_values(1.5, 1.5, -8.0), 0.1);
+        let material = Material{color: Color::red()};
+        object_table.push_object(SceneObject::new_with_material(Box::new(sphere1), material));
 
         let camera = Camera::default();
         let mut camera_table = CameraTable::new();

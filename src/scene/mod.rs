@@ -14,3 +14,9 @@ mod document;
 
 pub use self::color::Color;
 mod color;
+
+pub use self::material::Material;
+mod material;
+
+pub use self::scene_object::SceneObject;
+mod scene_object;
