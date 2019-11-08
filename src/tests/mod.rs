@@ -84,6 +84,32 @@ mod ray_tests {
 }
 
 #[cfg(test)]
+mod plane_tests {
+
+    use super::super::geometry::{Vector3, Ray, Plane};
+    use super::super::traits::{RayIntersectionResult, RayCast};
+
+    #[test]
+    fn test_plane_ray_intersection() {
+        // Arrange
+        let mut plane = Plane::world_xy();
+        plane.origin = Vector3::new_from_values(0.0, 0.0, -5.0);
+        let ray = Ray::new_from_vectors(&Vector3::new_from_values(0.0, 0.0, 1.0), &Vector3::new_from_values(0.0, 0.0, -1.0));
+
+        // Act
+        let int = plane.intersect_ray(&ray);
+
+        // Assert
+        match int {
+            RayIntersectionResult::None => panic!("No intersection found!"),
+            RayIntersectionResult::Some(v_int) => {
+                assert_eq!(v_int, Vector3::new_from_values(0.0, 0.0, -5.0))
+            }
+        }
+    }
+}
+
+#[cfg(test)]
 mod sphere_tests {
 
     use super::super::geometry::{Vector3, Ray, Sphere};

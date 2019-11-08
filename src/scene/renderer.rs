@@ -56,15 +56,19 @@ impl Renderer {
 
                 // iterate over all document objects and intersect
                 image.put_pixel(x, y, black);
+                let mut distance_to_camera = 1000000.0_f64;
                 for object_reference in document.object_table.objects.iter() {
                     match object_reference.object.intersect_ray(&ray) {
                         RayIntersectionResult::None => (),
-                        RayIntersectionResult::Some(_) => {
-                            // omit intersection result for now
-                            // in the final code we will have to only draw the int nearest to the camera!
-                            let color = &object_reference.material.color;
-                            let color_rgba = image::Rgba([0, (color.red * 255.0) as u8, (color.green * 255.0) as u8, (color.blue * 255.0) as u8]);
-                            image.put_pixel(x, y, color_rgba)
+                        RayIntersectionResult::Some(v_int) => {
+                            // test if closest to camera
+                            let distance = v_int.distance_to_squared(&camera_origin);
+                            if distance < distance_to_camera {
+                                distance_to_camera = distance;
+                                let color = &object_reference.material.color;
+                                let color_rgba = image::Rgba([(color.red * 255.0) as u8, (color.green * 255.0) as u8, (color.blue * 255.0) as u8, 0]);
+                                image.put_pixel(x, y, color_rgba)
+                            }
                         }
                     }
                 }

@@ -18,6 +18,30 @@ impl Vector3 {
         }
     }
 
+    pub const fn x_axis() -> Vector3 {
+        Vector3{
+            x: 1.0,
+            y: 0.0,
+            z: 0.0
+        }
+    }
+
+    pub const fn y_axis() -> Vector3 {
+        Vector3{
+            x: 0.0,
+            y: 1.0,
+            z: 0.0
+        }
+    }
+
+    pub const fn z_axis() -> Vector3 {
+        Vector3{
+            x: 0.0,
+            y: 0.0,
+            z: 1.0
+        }
+    }
+
     pub const fn new_from_values(x: f64, y: f64, z: f64) -> Vector3 {
         Vector3{
             x: x,
@@ -32,6 +56,10 @@ impl Vector3 {
 
     pub fn calculate_length(&self) -> f64 {
         self.dot_product(&self).sqrt()
+    }
+
+    pub fn calculate_length_squared(&self) -> f64 {
+        self.dot_product(&self)
     }
 
     pub fn as_normalized(&self) -> Vector3 {
@@ -49,6 +77,18 @@ impl Vector3 {
 
     pub fn distance_to(&self, other: &Vector3) -> f64 {
         (self - other).calculate_length()
+    }
+
+    pub fn distance_to_squared(&self, other: &Vector3) -> f64 {
+        (self - other).calculate_length_squared()
+    }
+
+    pub fn cross_product(first: &Vector3, other: &Vector3) -> Vector3 {
+        Vector3 {
+            x: first.y * other.z - first.z * other.y,
+            y: first.z * other.x - first.x * other.z,
+            z: first.x * other.y - first.y * other.x,
+            }
     }
 }
 

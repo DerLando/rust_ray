@@ -1,5 +1,5 @@
 use super::super::scene::{Camera, Transformable, SceneObject, Material, Color};
-use super::super::geometry::{Sphere, Vector3};
+use super::super::geometry::{Sphere, Vector3, Plane};
 use super::super::traits::{RayCast};
 use std::boxed::Box;
 
@@ -52,6 +52,11 @@ impl Document {
         let sphere1 = Sphere::new_from_values(&Vector3::new_from_values(1.5, 1.5, -8.0), 0.1);
         let material = Material{color: Color::red()};
         object_table.push_object(SceneObject::new_with_material(Box::new(sphere1), material));
+
+        let mut plane = Plane::world_xy();
+        plane.origin = Vector3::new_from_values(0.0, 0.0, -10.0);
+        let plane_material = Material{color: Color::green()};
+        object_table.push_object(SceneObject::new_with_material(Box::new(plane), plane_material));
 
         let camera = Camera::default();
         let mut camera_table = CameraTable::new();
