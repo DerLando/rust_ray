@@ -6,7 +6,7 @@ use super::{Transformation, Transformable};
 /// While we imagine the euclidean 3d space as an x-y-floor-plane with an upwards pointing z-axis,
 /// cameras are aligned to their image plane as x-y-plane and have their z-axis pointing away from the image,
 /// they are looking at
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Camera {
     origin: Vector3,
     direction: Vector3,

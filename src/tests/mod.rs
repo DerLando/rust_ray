@@ -181,6 +181,40 @@ mod transformation_tests {
 }
 
 #[cfg(test)]
+mod camera_tests {
+    use super::super::scene::{Camera};
+    use super::super::geometry::{Vector3};
+
+    #[test]
+    fn test_default_look_at() {
+        // Arrange
+        let v_origin = Vector3::new();
+        let v_target = Camera::default_direction();
+        let camera_default = Camera::default();
+
+        // Act
+        let camera = Camera::new_from_position_and_target(&v_origin, &v_target);
+
+        // Assert
+        assert_eq!(camera, camera_default)
+    }
+
+    #[test]
+    fn test_look_at_offset() {
+        // Arrange
+        let v_origin = Vector3::new_from_values(0.0, 0.0, 1.0);
+        let v_target = Vector3::new_from_values(0.0, 0.0, -1.0);
+        let camera_default = Camera::default();
+
+        // Act
+        let camera = Camera::new_from_position_and_target(&v_origin, &v_target);
+
+        // Assert
+        assert_eq!(camera, camera_default)
+    }
+}
+
+#[cfg(test)]
 mod render_tests {
 
     use super::super::scene::{Document, Renderer, Transformation, Transformable};
@@ -195,7 +229,7 @@ mod render_tests {
 
         // Act
         let camera = &document.camera_table.cameras[0];
-        let camera = camera.transform(&Transformation::translation(&Vector3::new_from_values(0.5, 0.0, 0.0)));
+        // let camera = camera.transform(&Transformation::translation(&Vector3::new_from_values(0.5, 0.0, 0.0)));
         let img = renderer.render(&document, &camera);
 
         // Assert
